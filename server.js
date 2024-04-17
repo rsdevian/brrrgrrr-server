@@ -112,6 +112,21 @@ app.post('/account/signup', async (req, res) =>
 
 app.post('/customize'), async (req,res) => {
     try{
+        const { burgerName, ingredients, email} = req.body;
+        const user = await User.findOne({email});
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        const newCustomizedBurger = {
+            name: burgerName,
+            ingredients: ingredients
+        }
+        user.customizedBurgers.push(newCustomizedBurger)
+        await user.save();
+        
+        res.status(201).json({
+            message: "Burger customized successfully"
+        });
 
     } catch (error) {
         console.error("Customize error: ", error);
