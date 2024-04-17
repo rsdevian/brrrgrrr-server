@@ -62,6 +62,7 @@ app.post('/account/login', async (req, res) =>
             customizedBurgers, 
             userId: _id 
         })
+        console.log(user)
     }
     catch (error) 
     {
@@ -139,7 +140,7 @@ app.get('/orders', async (req, res) =>
     }
 });
 
-app.delete('/delete-order/:email/:index', async (req, res) => {
+app.post('orders/delete-order/:email/:index', async (req, res) => {
     const { 
         email, 
         index 
