@@ -17,24 +17,24 @@ const customerSchema = new Schema({
     orders: [{
         name: {
             type: String,
-            required: false
+            required: true
         }
     }],
     customizedBurgers: [{
         name: {
             type: String,
-            required: false
+            required: true
+        },
+        price: {
+            type: Number,
+            required: true
         },
         ingredients: [{
             type: String,
-            required: false
-        }],
-        price: {
-            type: Number,
-            required: false
-        }
-    }]
-});
+            required: true
+        }]
+    }],
+})
 
 const UserRegisterInformation = mongoose.model("UserRegister", customerSchema);
 
