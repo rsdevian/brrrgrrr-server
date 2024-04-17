@@ -137,7 +137,7 @@ app.post('/customize'), async (req,res) => {
 
 app.get('/orders', async (req, res) => 
 {
-    const { userId } = req.body;
+    const { userId, itemName } = req.body;
     try 
     {
         const user = await User.findById(userId);
@@ -145,7 +145,11 @@ app.get('/orders', async (req, res) =>
         {
             return res.status(404).json({ message: "User not found" });
         }
-        const orders = user.orders;
+        const orders = {
+            name: itemName
+        };
+        user.orders.push(orders);
+        await user.save();
         res.status(200).json(orders);
     } 
     catch (error) 
