@@ -50,14 +50,13 @@ app.post('/account/login', async (req, res) =>
         }
         const { 
             name, 
-            orders, 
-            customizedBurgers, 
+            orders,
+            customizedBurgers,
             _id 
         } = user
         res.status(200).json({ 
-            message: "Login successful", 
-            email, 
-            name, 
+            message: "Login successful",
+            name,
             orders, 
             customizedBurgers, 
             userId: _id 
@@ -68,7 +67,7 @@ app.post('/account/login', async (req, res) =>
     {
         console.error("Login error:", error)
         res.status(500).json({ 
-            message: "Internal server error" 
+            message: error.message 
         });
     }
 });
