@@ -13,23 +13,43 @@ const port = 3001
 app.use(cors())
 app.use(express.json())
 
-mongoose.connect(
-    connectionString, 
-    {
+app.use(express.urlencoded({extended:false}))
+
+mongoose.connect(connectionString, {
         useNewUrlParser: true,
-        useUnifiedTopology: true 
+        useUnifiedTopology: true })
+    .then(() => {console.log("Connected to database!\n")})
+    .catch(error => {console.error("MongoDB connection error: ", error)})
+
+app.get('/' , async(req, res) => {
+    try {
+        const users = await User.find({});
+        if(!users){
+            res.status(404).json({message:"No Users Found"})
+        }
+        res.json(users);    
+    } catch(error) {
+        res.status(500).json({message: error.message})
     }
-)
-.then(() => 
-    {
-        console.log("MongoDB database connection established successfully")
-    }
-)
-.catch(error => 
-    {
-        console.error("MongoDB connection error:", error)
-    }
-)
+})
+
+app.post('/account/signup', async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "User already exists" });
+        } else {  
+            const newUser = new User({ name, email, password });
+            await newUser.save();
+        }
+        res.status(201).json({ message: "User created successfully" });
+    } catch (error) 
+        {
+            console.error("Signup error: ", error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+});
 
 app.post('/account/login', async (req, res) => 
 {
@@ -72,43 +92,6 @@ app.post('/account/login', async (req, res) =>
     }
 });
 
-app.post('/account/signup', async (req, res) => 
-{
-    const { 
-        name, 
-        email, 
-        password 
-    } = req.body;
-    try 
-    {
-        const existingUser = await User.findOne({ email });
-        if (existingUser) 
-        {
-            return res.status(400).json({ 
-                message: "User already exists" 
-            });
-        } 
-        else 
-        {
-            const newUser = new User({ 
-                name, 
-                email, 
-                password
-             });
-            await newUser.save();
-        }
-        res.status(201).json({ 
-            message: "User created successfully" 
-        });
-    } 
-    catch (error) 
-    {
-        console.error("Signup error: ", error);
-        res.status(500).json({ 
-            message: "Internal server error" 
-        });
-    }
-});
 
 app.post('/customize'), async (req,res) => {
     try{
@@ -185,6 +168,6 @@ app.post('orders/delete-order/:email/:index', async (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`\nServer is running at http://localhost:${port}`);
+    console.log(`\nServer is running at port ${port}`);
 });
 
