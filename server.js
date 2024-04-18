@@ -25,56 +25,6 @@ mongoose.connect(connectionString, {
 
 app.use('/', router);
 
-app.post('/customize'), async (req,res) => {
-    try{
-        const { burgerName, ingredients, email} = req.body;
-        const user = await User.findOne({email});
-        console.log(user);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-        const newCustomizedBurger = {
-            name: burgerName,
-            ingredients: ingredients
-        }
-        user.customizedBurgers.push(newCustomizedBurger)
-        await user.save();
-
-        res.status(201).json({
-            message: "Burger customized successfully"
-        });
-
-    } catch (error) {
-        console.error("Customize error: ", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-}
-
-app.post('orders/delete-order/:email/:index', async (req, res) => {
-    const { 
-        email, 
-        index 
-    } = req.params;
-    try 
-    {
-        const user = await User.findOne({ email });
-        if (!user) 
-        {
-            console.log(user);
-            return res.status(404).json({ message: "User not found" });
-        }
-        const orderIndex = parseInt(index);
-        user.orders.splice(orderIndex, 1);
-        await user.save();
-        res.status(200).json({ message: "Order deleted successfully" });
-    } 
-    catch (error) 
-    {
-        console.error("Error deleting order:", error);
-        res.status(500).json({ message: "Internal server error", user });
-    }
-});
-
 app.listen(port, () => {
     console.log(`\nServer is running at port ${port}`);
 });
