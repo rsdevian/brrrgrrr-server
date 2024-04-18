@@ -38,6 +38,10 @@ const customerSchema = new Schema({
             required: true,
             default: 200
         },
+        quantity:{
+            type: Number,
+            required: true
+        },
         ingredients: [{
             type: String,
             required: true

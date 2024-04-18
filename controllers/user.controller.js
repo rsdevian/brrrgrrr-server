@@ -37,20 +37,27 @@ async function loginUser (req, res) {
 
 async function saveOrder(req, res) {
     try {
-        const { title, price } = req.body;
-        const userId = req.params.id;
-
-        const user = await User.findById(userId);
+        const { title, price, quantity } = req.body;
+        const user = await User.findById(req.params.id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
         const existingOrder = user.orders.find(order => order.name === title);
         if (existingOrder) {
-            existingOrder.quantity += 1;
+            if (quantity){
+                existingOrder.quantity += quantity;
+            } else {
+                existingOrder.quantity += 1;
+            }
         } else {
-            const newOrder = { name: title, quantity: 1, price: price };
-            user.orders.push(newOrder);
+            if (quantity){
+                const newOrder = { name: title, quantity: quantity, price: price };
+                user.orders.push(newOrder);
+            } else {
+                const newOrder = { name: title, quantity: 1, price: price };    
+                user.orders.push(newOrder);
+            }
         }
         await user.save();
         res.status(200).json({ message: "Order submitted successfully" });
@@ -62,8 +69,10 @@ async function saveOrder(req, res) {
 
 async function saveCustomized (req, res) {
         try {
-            const { id, burgerName, ingredients } = req.body;
-            const user = await User.findById(id);
+            const { burgerName, ingredients, quantity } = req.body;
+            console.log(req.body)
+            console.log(req.params.id)
+            const user = await User.findById(req.params.id);
             if (!user){
                 return res.status(404).json({ message: "User Not Found" });
             }
@@ -73,7 +82,7 @@ async function saveCustomized (req, res) {
                 return res.status(409).json({ message: "Burger already customized" });
             }
 
-            const newCustomizedOrder = { name: burgerName, ingredients: ingredients , price: 200};
+            const newCustomizedOrder = { name: burgerName, ingredients: ingredients , price: 200, quantity: quantity};
             user.customizedBurgers.push(newCustomizedOrder);
             await user.save();
     

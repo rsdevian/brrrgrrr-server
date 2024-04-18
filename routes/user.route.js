@@ -11,6 +11,6 @@ router.post("/orders/:id", saveOrder)
 
 router.post("/customize/:id", saveCustomized)
 
-router.post("/orders/:id", cancelOrder)
+router.delete("/orders/:id", cancelOrder)
 
 export default router;
