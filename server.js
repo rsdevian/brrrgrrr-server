@@ -1,13 +1,15 @@
-import express from "express"
-import cors from "cors"
-import mongoose from "mongoose"
-import dotenv from "dotenv"
-import User from "./models/userregister.model.js"
-import router from "./routes/user.route.js"
+import express from "express";
+import cors from "cors";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+import userRouter from "./routes/user.route.js";
+import burgerRouter from "./routes/burgers.route.js";
 
 dotenv.config()
 
 const connectionString = process.env.MONGODB_CONNECTION_STRING
+
 const app = express()
 const port = 3001
 
@@ -23,9 +25,12 @@ mongoose.connect(connectionString, {
     .catch(error => {console.error("MongoDB connection error: ", error)
 })
 
-app.use('/', router);
+app.use('/', userRouter);
+
+app.use('/burgers', burgerRouter);
 
 app.listen(port, () => {
     console.log(`\nServer is running at port ${port}`);
 });
+
 
