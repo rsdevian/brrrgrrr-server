@@ -70,8 +70,6 @@ async function saveOrder(req, res) {
 async function saveCustomized (req, res) {
         try {
             const { burgerName, ingredients, quantity } = req.body;
-            console.log(req.body)
-            console.log(req.params.id)
             const user = await User.findById(req.params.id);
             if (!user){
                 return res.status(404).json({ message: "User Not Found" });
@@ -95,6 +93,20 @@ async function saveCustomized (req, res) {
 
 async function cancelOrder (req,res) {
     try {
+        const userId = req.params.id;
+        const orderId = req.params.orderId;
+
+        console.log(userId + orderId);
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.orders = user.orders.filter(order => order._id.toString() !== orderId);
+
+        await user.save();
+
+        res.status(200).json({ message: "Order deleted successfully" });
         
     } catch (error) {
         res.status(500).json({message:error.message})
