@@ -25,6 +25,10 @@ const customerSchema = new mongoose.Schema({
         price: {
             type: Number,
             required: true
+        },
+        image: {
+            type: String,
+            require: true
         }
     }],
     customizedBurgers: [{

@@ -37,7 +37,7 @@ async function loginUser (req, res) {
 
 async function saveOrder(req, res) {
     try {
-        const { title, price, quantity } = req.body;
+        const { title, price, quantity, image } = req.body;
         const user = await User.findById(req.params.id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -52,10 +52,10 @@ async function saveOrder(req, res) {
             }
         } else {
             if (quantity){
-                const newOrder = { name: title, quantity: quantity, price: price };
+                const newOrder = { name: title, quantity: quantity, price: price, image: image };
                 user.orders.push(newOrder);
             } else {
-                const newOrder = { name: title, quantity: 1, price: price };    
+                const newOrder = { name: title, quantity: 1, price: price, image: image };    
                 user.orders.push(newOrder);
             }
         }
