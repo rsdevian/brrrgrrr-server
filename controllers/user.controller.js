@@ -44,9 +44,9 @@ async function getOrders (req,res) {
             return res.status(404).json({message: "User Not Found"})
         }
         const order = user.orders;
-        const customizedBurgers=user.customizedBurgers
+        const customizedBurgers = user.customizedBurgers
         console.log(order);
-        res.status(200).json({order: order,customizedBurgers});
+        res.status(200).json({order: order, customizedBurgers});
     } catch(error) {
         res.status(500).json({message: error.message});
     }
@@ -113,7 +113,8 @@ async function saveCustomized (req, res) {
 
 async function cancelOrder (req,res) {
     try {
-        
+
+        console.log(req)
         const userId = req.params.userID;
         const orderId = req.params.orderId;
 
@@ -133,4 +134,26 @@ async function cancelOrder (req,res) {
     }
 }
 
-export { signinUser, loginUser, getOrders, saveOrder, saveCustomized, cancelOrder };
+async function cancelCustomized (req,res) {
+    try {
+
+        const userId = req.params.userID;
+        const orderId = req.params.orderID;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        user.customizedBurgers = user.customizedBurgers.filter(order => {
+            return order._id.toString() !== orderId;
+        });
+    
+        await user.save();
+
+        res.status(200).json({ message: "Order deleted successfully", order:user.orders });
+    } catch (error) {
+        res.status(500).json({message:error.message})
+    }
+}
+
+export { signinUser, loginUser, getOrders, saveOrder, saveCustomized, cancelOrder, cancelCustomized };
