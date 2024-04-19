@@ -44,8 +44,9 @@ async function getOrders (req,res) {
             return res.status(404).json({message: "User Not Found"})
         }
         const order = user.orders;
+        const customizedBurgers=user.customizedBurgers
         console.log(order);
-        res.status(200).json({order: order});
+        res.status(200).json({order: order,customizedBurgers});
     } catch(error) {
         res.status(500).json({message: error.message});
     }
@@ -55,6 +56,7 @@ async function saveOrder(req, res) {
     try {
         const { title, price, quantity, image } = req.body;
         const user = await User.findById(req.params.id);
+        var newOrder;
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -70,15 +72,15 @@ async function saveOrder(req, res) {
             existingOrder.price += price;
         } else {
             if (quantity){
-                const newOrder = { name: title, quantity: quantity, price: price, image: image };
+                newOrder = { name: title, quantity: quantity, price: price, image: image };
                 user.orders.push(newOrder);
             } else {
-                const newOrder = { name: title, quantity: 1, price: price, image: image };    
+                newOrder = { name: title, quantity: 1, price: price, image: image };    
                 user.orders.push(newOrder);
             }
         }
         await user.save();
-        res.status(200).json({ message: "Order submitted successfully" });
+        res.status(200).json({ message: "Order submitted successfully",orders:user.orders });
     } catch (error) {
         console.error("Error saving order: ", error);
         res.status(500).json({ message: error.message });
@@ -102,7 +104,7 @@ async function saveCustomized (req, res) {
             user.customizedBurgers.push(newCustomizedOrder);
             await user.save();
     
-            res.status(200).json({ message: "Order submitted successfully" });
+            res.status(200).json({ message: "Order submitted successfully",custom:user.customizedBurgers });
         } catch (error) {
             console.error("Error saving order: ", error);
             res.status(500).json({ message: error.message });
