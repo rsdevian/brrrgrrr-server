@@ -50,7 +50,7 @@ const customerSchema = new mongoose.Schema({
             required: true
         }]
     }],
-})
+});
 
 const UserRegisterInformation = mongoose.model("userregisters", customerSchema);
 

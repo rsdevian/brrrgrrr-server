@@ -27,7 +27,7 @@ const burgerSchema = new mongoose.Schema(
             required: true
         }
     }
-)
+);
 
 const Burgers = mongoose.model("burgers-details",burgerSchema)
 
