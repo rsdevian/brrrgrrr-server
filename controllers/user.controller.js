@@ -35,6 +35,22 @@ async function loginUser (req, res) {
     }
 };
 
+async function getOrders (req,res) {
+    try{
+        const userID = req.params.id
+        console.log(req.params.id)
+        const user = await User.findById({ _id: userID })
+        if(!user){
+            return res.status(404).json({message: "User Not Found"})
+        }
+        const order = user.orders;
+        console.log(order);
+        res.status(200).json({order: order});
+    } catch(error) {
+        res.status(500).json({message: error.message});
+    }
+}
+
 async function saveOrder(req, res) {
     try {
         const { title, price, quantity, image } = req.body;
@@ -95,24 +111,24 @@ async function saveCustomized (req, res) {
 
 async function cancelOrder (req,res) {
     try {
-        const userId = req.params.id;
+        
+        const userId = req.params.userID;
         const orderId = req.params.orderId;
 
-        console.log(userId + orderId);
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-
-        user.orders = user.orders.filter(order => order._id.toString() !== orderId);
-
+        user.orders = user.orders.filter(order => {
+            return order._id.toString() !== orderId;
+        });
+    
         await user.save();
 
-        res.status(200).json({ message: "Order deleted successfully" });
-        
+        res.status(200).json({ message: "Order deleted successfully", order:user.orders });
     } catch (error) {
         res.status(500).json({message:error.message})
     }
 }
 
-export { signinUser, loginUser, saveOrder, saveCustomized, cancelOrder };
+export { signinUser, loginUser, getOrders, saveOrder, saveCustomized, cancelOrder };
