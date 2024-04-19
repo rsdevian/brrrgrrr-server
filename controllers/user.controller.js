@@ -47,9 +47,11 @@ async function saveOrder(req, res) {
         if (existingOrder) {
             if (quantity){
                 existingOrder.quantity += quantity;
+                
             } else {
                 existingOrder.quantity += 1;
             }
+            existingOrder.price += price;
         } else {
             if (quantity){
                 const newOrder = { name: title, quantity: quantity, price: price, image: image };
@@ -80,7 +82,7 @@ async function saveCustomized (req, res) {
                 return res.status(409).json({ message: "Burger already customized" });
             }
 
-            const newCustomizedOrder = { name: burgerName, ingredients: ingredients , price: 200, quantity: quantity};
+            const newCustomizedOrder = { name: burgerName, ingredients: ingredients , price: 200*quantity, quantity: quantity};
             user.customizedBurgers.push(newCustomizedOrder);
             await user.save();
     
