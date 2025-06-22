@@ -13,24 +13,26 @@ const connectionString = process.env.MONGODB_CONNECTION_STRING;
 const app = express();
 const port = 3001;
 
-app.use(cors());
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-app.use(express.urlencoded({extended:false}));
+app.use(express.urlencoded({ extended: false }));
 
-mongoose.connect(connectionString, {
+mongoose
+    .connect(connectionString, {
         useNewUrlParser: true,
-        useUnifiedTopology: true })
+        useUnifiedTopology: true,
+    })
     .then(() => {
-        console.log("Connected to database!\n")
+        console.log("Connected to database!\n");
     })
     .catch((error) => {
-        console.error("MongoDB connection error: ", error)
-})
+        console.error("MongoDB connection error: ", error);
+    });
 
-app.use('/', userRouter);
+app.use("/", userRouter);
 
-app.use('/burgers', burgerRouter);
+app.use("/burgers", burgerRouter);
 
 app.listen(port, () => {
     console.log(`\nServer is running at port ${port}`);

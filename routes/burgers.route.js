@@ -4,7 +4,7 @@ import { getBurgers, postBurger } from "../controllers/burger.controller.js";
 
 const router = express.Router();
 
-router.get('/',getBurgers);
-router.post('/',postBurger);
+router.get("/", getBurgers);
+router.post("/", postBurger);
 
 export default router;

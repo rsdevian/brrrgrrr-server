@@ -1,6 +1,14 @@
 import express from "express";
 
-import { signinUser, loginUser, getOrders, saveOrder, saveCustomized, cancelOrder, cancelCustomized} from "../controllers/user.controller.js";
+import {
+    signinUser,
+    loginUser,
+    getOrders,
+    saveOrder,
+    saveCustomized,
+    cancelOrder,
+    cancelCustomized,
+} from "../controllers/user.controller.js";
 
 const router = express.Router();
 
