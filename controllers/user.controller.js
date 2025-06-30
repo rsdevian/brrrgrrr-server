@@ -1,3 +1,10 @@
+import {
+    hashPassword,
+    comparePassword,
+} from "../middleware/bcrypt.middleware.js";
+
+import { generateToken } from "../middleware/token.middleware.js";
+
 import User from "../models/userregister.model.js";
 
 async function signinUser(req, res) {
@@ -8,9 +15,11 @@ async function signinUser(req, res) {
         if (existingUser) {
             return res.status(400).json({ message: "User already exists" });
         } else {
-            const newUser = new User({ name, email, password });
+            const hashedPassword = await hashPassword(password);
+            const newUser = new User({ name, email, password: hashedPassword });
             await newUser.save();
         }
+
         res.status(201).json({ message: "User created successfully" });
     } catch (error) {
         res.status(500).json({ message: "Internal server error" });
@@ -26,13 +35,22 @@ async function loginUser(req, res) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        if (user.password !== password) {
+        const isCorrectPassword = await comparePassword(
+            password,
+            user.password
+        );
+
+        if (!isCorrectPassword) {
             return res.status(401).json({ message: "Invalid password" });
         }
-
+        console.log("User: ", user);
+        const token = await generateToken(user._id, email);
+        console.log(token);
         const { name, orders, customizedBurgers, _id } = user;
+
         res.status(200).json({
             message: "Login successful",
+            token,
             name,
             orders,
             customizedBurgers,
