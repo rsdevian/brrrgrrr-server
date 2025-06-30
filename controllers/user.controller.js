@@ -43,9 +43,7 @@ async function loginUser(req, res) {
         if (!isCorrectPassword) {
             return res.status(401).json({ message: "Invalid password" });
         }
-        console.log("User: ", user);
         const token = await generateToken(user._id, email);
-        console.log(token);
         const { name, orders, customizedBurgers, _id } = user;
 
         res.status(200).json({
