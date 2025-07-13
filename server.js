@@ -11,7 +11,7 @@ dotenv.config();
 const connectionString = process.env.MONGODB_CONNECTION_STRING;
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT;
 
 app.use(cors({ origin: "*" }));
 app.use(express.json());
