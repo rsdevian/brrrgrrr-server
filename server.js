@@ -13,7 +13,7 @@ const connectionString = process.env.MONGODB_CONNECTION_STRING;
 const app = express();
 const port = process.env.PORT;
 
-app.use(cors({ origin: "*" }));
+app.use(cors({ origin: ["https://brrrgrrr.vercel.app"] }));
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: false }));
