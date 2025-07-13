@@ -11,17 +11,24 @@ dotenv.config();
 const connectionString = process.env.MONGODB_CONNECTION_STRING;
 
 const app = express();
+
 const port = process.env.PORT;
+
+const allowedOrigins = process.env.CORS_ORIGIN.split(",");
 
 app.use(
     cors({
-        origin: [
-            "https://brrrgrrr.vercel.app",
-            "https://brrrgrrr-qchnpgh23-vaishnav-nishanth-a-vs-projects.vercel.app",
-            "https://brrrgrrr-vaishnav-nishanth-a-vs-projects.vercel.app",
-        ],
+        origin: function (origin, callback) {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
+        credentials: true,
     })
 );
+
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: false }));
@@ -43,5 +50,6 @@ app.use("/", userRouter);
 app.use("/burgers", burgerRouter);
 
 app.listen(port, () => {
-    console.log(`\nServer is running at port ${port}`);
+    // console.log(`\nServer is running at port ${port}`);
+    console.log("Production server ready to use");
 });
